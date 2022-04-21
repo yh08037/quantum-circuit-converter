@@ -36,6 +36,17 @@ class QuantumCircuitConverter:
             )
         return self
 
+    
+    def save(self, output_path: str = None) -> None:
+        path = output_path if str is None else self.file_path
+        with open(path, 'w') as f:
+            f.write(self.to_string())
+    
+    
+    def __set_format(self, format: str) -> None:
+        self.file_path = self.file_path.replace(self.format, format)
+        self.format    = format
+
 
     def __revlib_to_openqasm(self):
         if self.format != 'revlib':
@@ -84,7 +95,7 @@ class QuantumCircuitConverter:
                 result.append(inst)
         
         self.lines = result
-        self.format = 'qasm'
+        self.__set_format('qasm')
 
         return self
 
@@ -144,7 +155,7 @@ class QuantumCircuitConverter:
                 result.append(inst)
 
         self.lines = result
-        self.format = 'qasm'
+        self.__set_format('qasm')
 
         return self
 
@@ -202,8 +213,5 @@ if __name__ == '__main__':
         QuantumCircuitConverter(file_path)
             .to_openqasm()
             .decompose()
-            .to_string()
+            .save()
     )
-
-    print(result)
-    
